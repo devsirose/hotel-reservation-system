@@ -1,2 +1,2 @@
-# simple-bank
-simple bank system in golang
+# simple-bank-system
+A lightweight bank application written in Go that manages customers, accounts, and transactions with secure authentication and simple REST APIs.

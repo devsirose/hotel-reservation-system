@@ -6,19 +6,31 @@ import (
 	"fmt"
 )
 
-type Store struct {
-	db      *sql.DB  // db connection manager
-	Queries *Queries // query interface
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+	//CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error)
+	//VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
+}
+
+type MockStore struct {
+	//mockDb
+	*Queries
+}
+
+type SQLStore struct {
+	db       *sql.DB // real db connection manager
+	*Queries         // query interface
 } // EntityManager
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (store *Store) ExecTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil) // lay mot connection tu pool luu vao tx -> mo 1 commit
 	if err != nil {
 		return err

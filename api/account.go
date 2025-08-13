@@ -26,7 +26,7 @@ func (s *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	acc, err := s.store.Queries.CreateAccount(ctx, db.CreateAccountParams{
+	acc, err := s.store..CreateAccount(ctx, db.CreateAccountParams{
 		Owner:    req.Owner,
 		Currency: req.Currency,
 		Balance:  0,

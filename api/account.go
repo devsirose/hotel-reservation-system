@@ -26,7 +26,7 @@ func (s *Server) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	acc, err := s.store..CreateAccount(ctx, db.CreateAccountParams{
+	acc, err := s.store.CreateAccount(ctx, db.CreateAccountParams{
 		Owner:    req.Owner,
 		Currency: req.Currency,
 		Balance:  0,
@@ -47,7 +47,7 @@ func (s *Server) GetAccountBy(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	acc, err := s.store.Queries.GetAccount(ctx, req.ID)
+	acc, err := s.store.GetAccount(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, notFoundResponse(strconv.FormatInt(req.ID, 10)))
 		return

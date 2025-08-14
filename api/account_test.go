@@ -1,4 +1,4 @@
-package test
+package api
 
 import (
 	"encoding/json"
@@ -7,7 +7,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/devsirose/simplebank/api"
 	mockdb "github.com/devsirose/simplebank/db/mock"
 	db "github.com/devsirose/simplebank/db/sqlc"
 	"github.com/devsirose/simplebank/util"
@@ -15,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateAccount(t *testing.T) {
+func TestGetAccount(t *testing.T) {
 	account := randomAccount()
 
 	ctrl := gomock.NewController(t)
@@ -26,7 +25,7 @@ func TestCreateAccount(t *testing.T) {
 	store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Return(account, nil).Times(1)
 	//When action occurs in service or bussiness logic
 	//Example test result of function (GetAccountBy in api) whether match account
-	server := api.NewServer(store)
+	server := NewServer(store)
 	recorder := httptest.NewRecorder()
 
 	// When: gọi API GET /accounts/:id
@@ -34,7 +33,7 @@ func TestCreateAccount(t *testing.T) {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	require.NoError(t, err)
 
-	server.Router.ServeHTTP(recorder, request)
+	server.router.ServeHTTP(recorder, request)
 
 	// Then: HTTP 200 và body khớp account
 	require.Equal(t, http.StatusOK, recorder.Code)

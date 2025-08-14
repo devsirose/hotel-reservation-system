@@ -10,8 +10,8 @@ import (
 
 type User struct {
 	ID       int64  `json:"id"`
-	username string `json:"username"`
-	password string `json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func TestCreateAccount(t *testing.T) {

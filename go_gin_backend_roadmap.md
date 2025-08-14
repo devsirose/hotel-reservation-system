@@ -2,17 +2,17 @@
 
 ## **Day 1: Project Setup & Architecture**
 
--   [ ] Khởi tạo dự án Gin (`go mod init` + cấu trúc thư mục Clean
+-   [X] Khởi tạo dự án Gin (`go mod init` + cấu trúc thư mục Clean
     Architecture)
--   [ ] Cấu hình `.env` & load config (Viper)
--   [ ] Tích hợp logger (Zap hoặc Logrus)
--   [ ] Kết nối PostgreSQL (GORM / sqlc)
+-   [X] Cấu hình `.env` & load config (Viper)
+-   [X] Tích hợp logger (Zap hoặc Logrus)
+-   [X] Kết nối PostgreSQL (GORM / sqlc)
 -   [ ] Cấu hình Docker Compose cho Postgres & API
 
 ## **Day 2: Routing & Middleware**
 
--   [ ] Định nghĩa route RESTful trong Gin
--   [ ] Xây dựng middleware logging, recovery, request ID
+-   [X] Định nghĩa route RESTful trong Gin
+-   [X] Xây dựng middleware logging, recovery, request ID
 -   [ ] CORS & rate-limiting
 -   [ ] JWT Auth middleware
 -   [ ] Unit test cho middleware
@@ -30,8 +30,8 @@
 -   [ ] Goroutines + WaitGroup
 -   [ ] Context cancellation (timeout, deadline)
 -   [ ] Worker pool pattern
--   [ ] Channel patterns (fan-in, fan-out)
--   [ ] Async job queue (RabbitMQ, Kafka, hoặc Redis Streams)
+-   [ ] **_Channel patterns (fan-in, fan-out)_**
+-   [ ] **_Async job queue (RabbitMQ, Kafka, hoặc Redis Streams)_**
 
 ## **Day 5: API Business Logic & Validation**
 

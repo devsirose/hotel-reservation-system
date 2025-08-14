@@ -13,11 +13,6 @@ type Store interface {
 	//VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
 }
 
-type MockStore struct {
-	//mockDb
-	*Queries
-}
-
 type SQLStore struct {
 	db       *sql.DB // real db connection manager
 	*Queries         // query interface

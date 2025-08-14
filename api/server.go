@@ -4,6 +4,8 @@ import (
 	db "github.com/devsirose/simplebank/db/sqlc"
 	"github.com/devsirose/simplebank/middleware"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 type Server struct {
@@ -18,6 +20,10 @@ func NewServer(store db.Store) *Server {
 
 	router := gin.Default()
 	router.Use(middleware.RecoveryWithLogger)
+	//custom validator
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		_ = v.RegisterValidation("currency", isValidCurrency)
+	}
 
 	router.POST("/api/v1/accounts", server.CreateAccount)
 	router.GET("/api/v1/accounts/:id", server.GetAccountById)

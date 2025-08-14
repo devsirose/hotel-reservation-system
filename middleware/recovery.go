@@ -9,8 +9,9 @@ import (
 	"go.uber.org/zap"
 )
 
-func RecoveryWithLogger(c *gin.Context) {
+var RecoveryWithLogger gin.HandlerFunc = func(c *gin.Context) {
 	defer func() {
+		//entry point when panic
 		if r := recover(); r != nil {
 			// Log panic + stacktrace
 			logger.Log.Error("panic recovered",

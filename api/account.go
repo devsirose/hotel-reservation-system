@@ -39,7 +39,7 @@ func (s *Server) CreateAccount(ctx *gin.Context) {
 	return
 }
 
-func (s *Server) GetAccountBy(ctx *gin.Context) {
+func (s *Server) GetAccountById(ctx *gin.Context) {
 	var req GetAccountRequest
 
 	if err := ctx.ShouldBindUri(&req); err != nil {

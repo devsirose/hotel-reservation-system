@@ -8,7 +8,7 @@ import (
 
 type Server struct {
 	store  db.Store
-	router *gin.Engine
+	Router *gin.Engine
 }
 
 func NewServer(store db.Store) *Server {
@@ -20,14 +20,14 @@ func NewServer(store db.Store) *Server {
 	router.Use(middleware.RecoveryWithLogger)
 
 	router.POST("/api/v1/accounts", server.CreateAccount)
-	router.GET("/api/v1/accounts/:id", server.GetAccountBy)
+	router.GET("/api/v1/accounts/:id", server.GetAccountById)
 
-	server.router = router
+	server.Router = router
 	return server
 }
 
 func (server *Server) Start(address string) error {
-	return server.router.Run(address)
+	return server.Router.Run(address)
 }
 
 func (server *Server) Close() error {

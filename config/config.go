@@ -7,11 +7,12 @@ import (
 // Config store all configuration of the application
 // The value is read by Viper from a config file or environment variables.
 type Config struct {
-	AppName    string `mapstructure:"APP_NAME"`
-	DbDriver   string `mapstructure:"DB_DRIVER"`
-	DbSource   string `mapstructure:"DB_SOURCE"`
-	ServerHost string `mapstructure:"SERVER_HOST"`
-	ServerPort string `mapstructure:"SERVER_PORT"`
+	AppName        string `mapstructure:"APP_NAME"`
+	DbDriver       string `mapstructure:"DB_DRIVER"`
+	DbSource       string `mapstructure:"DB_SOURCE"`
+	ServerHost     string `mapstructure:"SERVER_HOST"`
+	HTTPServerPort string `mapstructure:"HTTP_SERVER_PORT"`
+	GRPCServerPort string `mapstructure:"GRPC_SERVER_PORT"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -9,9 +9,9 @@ import (
 	"github.com/devsirose/simplebank/api"
 	"github.com/devsirose/simplebank/config"
 	db "github.com/devsirose/simplebank/db/sqlc"
-	"github.com/devsirose/simplebank/gapi"
 	"github.com/devsirose/simplebank/logger"
 	"github.com/devsirose/simplebank/pb"
+	"github.com/devsirose/simplebank/svc"
 	_ "github.com/lib/pq" // import this package to run init() function in package
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -36,8 +36,8 @@ func runGrpcServer(cfg config.Config) {
 		logger.Log.Error("Failed to connect to database", zap.Error(err))
 		os.Exit(1)
 	}
-	server := gapi.NewServer(cfg, db.NewStore(conn))
-	pb.RegisterAccountServiceServer(grpcServer, server)
+	accSvcServer := svc.NewAccountService(db.NewStore(conn))
+	pb.RegisterAccountServiceServer(grpcServer, accSvcServer)
 	reflection.Register(grpcServer) // client can explore rpc(s) on server & how to call them
 
 	listener, err := net.Listen("tcp", cfg.ServerHost+":"+cfg.GRPCServerPort)

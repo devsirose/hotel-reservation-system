@@ -8,6 +8,7 @@ import (
 
 type Store interface {
 	Querier
+	ExecTx(ctx context.Context, fn func(*Queries) error) error
 	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
 	//CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error)
 	//VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
@@ -25,7 +26,7 @@ func NewStore(db *sql.DB) Store {
 	}
 }
 
-func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) ExecTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil) // lay mot connection tu pool luu vao tx -> mo 1 commit
 	if err != nil {
 		return err

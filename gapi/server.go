@@ -3,12 +3,10 @@ package gapi
 import (
 	"github.com/devsirose/simplebank/config"
 	db "github.com/devsirose/simplebank/db/sqlc"
-	"github.com/devsirose/simplebank/pb"
 )
 
 // Server serves gRPC requests for our banking service.
 type Server struct {
-	pb.UnimplementedAccountServiceServer
 	config config.Config
 	store  db.Store
 }

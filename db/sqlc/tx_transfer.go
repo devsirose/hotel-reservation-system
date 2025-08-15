@@ -20,7 +20,7 @@ type TransferTxResult struct {
 // It creates a transfer record, add account entries, and update account balance within single function in tracsaction
 func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
-	err := store.execTx(ctx, func(q *Queries) error {
+	err := store.ExecTx(ctx, func(q *Queries) error {
 		var err error
 		if result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: arg.FromAccountID,

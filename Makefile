@@ -1,9 +1,9 @@
 postgresdb:
-	sudo docker run --name postgres-local -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=root -e POSTGRES_DB=account-service -p 5432:5432 -d postgres
+	sudo docker run --name account-service-db -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=root -e POSTGRES_DB=account-service -p 5432:5432 -d postgres:15
 createdb:
-	sudo docker exec -it postgres-local createdb --username=root --owner=root account-service
+	sudo docker exec -it account-service-db createdb --username=root --owner=root account-service
 dropdb:
-	sudo docker exec -it postgres-local dropdb account-service
+	sudo docker exec -it account-service-db dropdb account-service
 migrateup:
 	migrate -path db/migration/ -database "postgresql://root:mysecretpassword@localhost:5432/account-service?sslmode=disable" -verbose up
 migratedown:

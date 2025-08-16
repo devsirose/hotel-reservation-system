@@ -7,6 +7,7 @@
 package pb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,9 +25,9 @@ var File_account_service_proto protoreflect.FileDescriptor
 
 const file_account_service_proto_rawDesc = "" +
 	"\n" +
-	"\x15account_service.proto\x12\x02pb\x1a\raccount.proto2V\n" +
-	"\x0eAccountService\x12D\n" +
-	"\rCreateAccount\x12\x18.pb.CreateAccountRequest\x1a\x19.pb.CreateAccountResponseB$Z\"github.com/devsirose/simplebank/pbb\x06proto3"
+	"\x15account_service.proto\x12\x02pb\x1a\raccount.proto\x1a\x1cgoogle/api/annotations.proto2s\n" +
+	"\x0eAccountService\x12a\n" +
+	"\rCreateAccount\x12\x18.pb.CreateAccountRequest\x1a\x19.pb.CreateAccountResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/v1/accountsB$Z\"github.com/devsirose/simplebank/pbb\x06proto3"
 
 var file_account_service_proto_goTypes = []any{
 	(*CreateAccountRequest)(nil),  // 0: pb.CreateAccountRequest

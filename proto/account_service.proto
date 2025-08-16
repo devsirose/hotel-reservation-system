@@ -3,9 +3,15 @@ syntax = "proto3";
 package pb;
 
 import "account.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/devsirose/simplebank/pb";
 
 service AccountService {
-    rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
+    rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse) {
+      option (google.api.http) = {
+          post: "/api/v1/accounts"
+          body: "*"
+      };
+    }
 }

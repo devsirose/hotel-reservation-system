@@ -4,44 +4,34 @@ import (
 	"context"
 
 	db "github.com/devsirose/simplebank/db/sqlc"
-	"github.com/devsirose/simplebank/pb"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"github.com/devsirose/simplebank/model"
+	"github.com/devsirose/simplebank/util"
 )
 
 type AccountService interface {
-	CreateAccount(context.Context, *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error)
+	CreateAccount(context.Context, db.CreateAccountParams) (model.AccountDTO, error)
 	TransferTx(ctx context.Context, arg db.TransferTxParams) (db.TransferTxResult, error)
 }
 
 type AccountServiceImpl struct {
 	store db.Store
-	pb.UnimplementedAccountServiceServer
 }
 
 func NewAccountService(store db.Store) *AccountServiceImpl {
 	return &AccountServiceImpl{store: store}
 }
 
-func (s AccountServiceImpl) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountResponse, error) {
+func (s AccountServiceImpl) CreateAccount(ctx context.Context, arg db.CreateAccountParams) (model.AccountDTO, error) {
 	acc, err := s.store.CreateAccount(ctx, db.CreateAccountParams{
-		Owner:    req.Owner,
-		Balance:  req.Balance,
-		Currency: req.Currency,
+		Owner:    arg.Owner,
+		Balance:  arg.Balance,
+		Currency: arg.Currency,
 	})
 	if err != nil {
-		return nil, err
+		return model.AccountDTO{}, err
 	}
-
-	pbAcc := &pb.Account{
-		Owner:     acc.Owner,
-		Balance:   acc.Balance,
-		Currency:  acc.Currency,
-		CreatedAt: timestamppb.New(acc.CreatedAt),
-	}
-
-	return &pb.CreateAccountResponse{
-		Account: pbAcc,
-	}, nil
+	// Convert db.Account to AccountDTO
+	return util.AccountToDTO(acc), err
 }
 
 func (s AccountServiceImpl) TransferTx(ctx context.Context, arg db.TransferTxParams) (db.TransferTxResult, error) {

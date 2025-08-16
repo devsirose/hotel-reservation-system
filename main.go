@@ -9,6 +9,7 @@ import (
 	"github.com/devsirose/simplebank/api"
 	"github.com/devsirose/simplebank/config"
 	db "github.com/devsirose/simplebank/db/sqlc"
+	"github.com/devsirose/simplebank/gapi"
 	"github.com/devsirose/simplebank/logger"
 	"github.com/devsirose/simplebank/pb"
 	"github.com/devsirose/simplebank/svc"
@@ -36,7 +37,8 @@ func runGrpcServer(cfg config.Config) {
 		logger.Log.Error("Failed to connect to database", zap.Error(err))
 		os.Exit(1)
 	}
-	accSvcServer := svc.NewAccountService(db.NewStore(conn))
+	accSvc := svc.NewAccountService(db.NewStore(conn))
+	accSvcServer := gapi.NewAccountGRPCServer(accSvc)
 	pb.RegisterAccountServiceServer(grpcServer, accSvcServer)
 	reflection.Register(grpcServer) // client can explore rpc(s) on server & how to call them
 

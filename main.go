@@ -30,8 +30,7 @@ func main() {
 		logger.Log.Error(err.Error())
 		os.Exit(1)
 	}
-	go runGatewayServer(cfg)
-	runGrpcServer(cfg)
+	runGinServer(cfg)
 }
 func runGrpcServer(cfg config.Config) {
 	grpcServer := grpc.NewServer()

@@ -1,13 +1,13 @@
 postgresdb:
-	sudo docker run --name account-service-db -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=root -e POSTGRES_DB=account-service -p 5432:5432 -d postgres:15
+	sudo docker run --name hotel-reservation-system-db -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=root -e POSTGRES_DB=hotel-reservation-system -p 5432:5432 -d postgis/postgis:16-3.4
 createdb:
-	sudo docker exec -it account-service-db createdb --username=root --owner=root account-service
+	sudo docker exec -it hotel-reservation-system-db createdb --username=root --owner=root hotel-reservation-system
 dropdb:
-	sudo docker exec -it account-service-db dropdb account-service
+	sudo docker exec -it hotel-reservation-system-db dropdb hotel-reservation-system
 migrateup:
-	migrate -path db/migration/ -database "postgresql://root:mysecretpassword@localhost:5432/account-service?sslmode=disable" -verbose up
+	migrate -path db/migration/ -database "postgresql://root:mysecretpassword@localhost:5432/hotel-reservation-system?sslmode=disable" -verbose up
 migratedown:
-	yes | migrate -path db/migration/ -database "postgresql://root:mysecretpassword@localhost:5432/account-service?sslmode=disable" -verbose down
+	yes | migrate -path db/migration/ -database "postgresql://root:mysecretpassword@localhost:5432/hotel-reservation-system?sslmode=disable" -verbose down
 sqlc:
 	sqlc generate
 test:

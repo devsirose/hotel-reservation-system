@@ -109,6 +109,20 @@ func (mr *MockStoreMockRecorder) DeleteAccount(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccount", reflect.TypeOf((*MockStore)(nil).DeleteAccount), arg0, arg1)
 }
 
+// ExecTx mocks base method.
+func (m *MockStore) ExecTx(arg0 context.Context, arg1 func(*db.Queries) error) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExecTx", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ExecTx indicates an expected call of ExecTx.
+func (mr *MockStoreMockRecorder) ExecTx(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExecTx", reflect.TypeOf((*MockStore)(nil).ExecTx), arg0, arg1)
+}
+
 // GetAccount mocks base method.
 func (m *MockStore) GetAccount(arg0 context.Context, arg1 int64) (db.Account, error) {
 	m.ctrl.T.Helper()

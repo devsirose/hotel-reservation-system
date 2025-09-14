@@ -1,26 +1,16 @@
 package main
 
 import (
-	"context"
 	"database/sql"
-	"fmt"
-	"net"
-	"net/http"
+	"log"
 	"os"
 
-	"github.com/devsirose/simplebank/api"
-	"github.com/devsirose/simplebank/config"
-	db "github.com/devsirose/simplebank/db/sqlc"
-	"github.com/devsirose/simplebank/gapi"
-	"github.com/devsirose/simplebank/logger"
-	"github.com/devsirose/simplebank/pb"
-	"github.com/devsirose/simplebank/svc"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	_ "github.com/lib/pq" // import this package to run init() function in package
+	"github.com/devsirose/hotel-reservation/api"
+	"github.com/devsirose/hotel-reservation/config"
+	db "github.com/devsirose/hotel-reservation/db/sqlc"
+	"github.com/devsirose/hotel-reservation/logger"
+	_ "github.com/lib/pq"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func main() {
@@ -30,85 +20,37 @@ func main() {
 		logger.Log.Error(err.Error())
 		os.Exit(1)
 	}
-	runGinServer(cfg)
-}
-func runGrpcServer(cfg config.Config) {
-	grpcServer := grpc.NewServer()
-	//run application
-	conn, err := sql.Open(cfg.DbDriver, cfg.DbSource)
+
+	dbSQL, err := sql.Open(cfg.DbDriver, cfg.DbSource)
 	if err != nil {
 		logger.Log.Error("Failed to connect to database", zap.Error(err))
 		os.Exit(1)
 	}
-	accSvc := svc.NewAccountService(db.NewStore(conn))
-	accSvcServer := gapi.NewAccountGRPCServer(accSvc)
-	pb.RegisterAccountServiceServer(grpcServer, accSvcServer)
-	reflection.Register(grpcServer) // client can explore rpc(s) on server & how to call them
+	defer dbSQL.Close()
 
-	listener, err := net.Listen("tcp", cfg.ServerHost+":"+cfg.GRPCServerPort)
-	if err != nil {
-		logger.Log.Error(fmt.Sprintf("Failed to listen on port %s", cfg.GRPCServerPort), zap.Error(err))
-	}
-	logger.Log.Info(fmt.Sprintf("GRPC server used port %s", cfg.GRPCServerPort))
-
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		logger.Log.Error(fmt.Sprintf("Failed to start gRPC server: %s", err.Error()))
-	}
-}
-func runGatewayServer(cfg config.Config) {
-	//run application
-	conn, err := sql.Open(cfg.DbDriver, cfg.DbSource)
-	if err != nil {
-		logger.Log.Error("Failed to connect to database", zap.Error(err))
+	if err := dbSQL.Ping(); err != nil {
+		logger.Log.Error("Failed to ping database", zap.Error(err))
 		os.Exit(1)
 	}
 
-	accSvc := svc.NewAccountService(db.NewStore(conn))
-	accSvcServer := gapi.NewAccountGRPCServer(accSvc)
-
-	grpcMux := runtime.NewServeMux(
-		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-			MarshalOptions: protojson.MarshalOptions{
-				UseProtoNames: true,
-			},
-			UnmarshalOptions: protojson.UnmarshalOptions{
-				DiscardUnknown: true,
-			},
-		}),
+	logger.Log.Info("Database connected successfully",
+		zap.String("driver", cfg.DbDriver),
 	)
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	err = pb.RegisterAccountServiceHandlerServer(ctx, grpcMux, accSvcServer)
-	if err != nil {
-		logger.Log.Error("Failed to register gRPC gateway handler", zap.Error(err))
-	}
 
-	httpMux := http.NewServeMux()
-	httpMux.Handle("/", grpcMux)
+	// Create db store
+	store := db.NewStore(dbSQL)
 
-	listener, err := net.Listen("tcp", cfg.ServerHost+":"+cfg.HTTPServerPort)
-	if err != nil {
-		logger.Log.Error(fmt.Sprintf("Failed to listen on port %s", cfg.HTTPServerPort), zap.Error(err))
-	}
-	logger.Log.Info(fmt.Sprintf("Started HTTP gateway at %s", cfg.HTTPServerPort))
+	// Create API server
+	server := api.NewServer(store, dbSQL)
 
-	err = http.Serve(listener, httpMux)
-	if err != nil {
-		logger.Log.Error(fmt.Sprintf("Failed to start gRPC server: %s", err.Error()))
-	}
-}
-
-func runGinServer(cfg config.Config) {
-	//run application
-	conn, err := sql.Open(cfg.DbDriver, cfg.DbSource)
-	if err != nil {
-		logger.Log.Error("Failed to connect to database", zap.Error(err))
-		os.Exit(1)
-	}
-	server := api.NewServer(db.NewStore(conn))
-	if err := server.Start(cfg.ServerHost + ":" + cfg.HTTPServerPort); err != nil {
-		logger.Log.Error("Failed to start server", zap.Error(err))
-		os.Exit(1)
+	serverAddr := cfg.ServerHost + ":" + cfg.HTTPServerPort
+	logger.Log.Info("Starting Hotel Reservation System",
+		zap.String("address", serverAddr),
+		zap.String("app_name", cfg.AppName),
+		zap.String("environment", "development"),
+	)
+	
+	if err := server.Start(serverAddr); err != nil {
+		log.Fatal("Failed to start server:", err)
 	}
 }

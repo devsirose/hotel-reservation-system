@@ -1,2 +1,4 @@
-# simple-bank-system
-A lightweight bank application written in Go that manages customers, accounts, and transactions with secure authentication and simple REST APIs.
+# Hotel Reservation System
+
+A lightweight reservation system written in Go.  
+It manages hotels, rooms, and reservations with secure authentication and simple REST APIs.
